@@ -1,22 +1,25 @@
 .PHONY: install test lint typecheck run-scenarios grade-local clean
 
+PYTHON ?= python3
+PIP ?= $(PYTHON) -m pip
+
 install:
-	pip install -e '.[dev]'
+	$(PIP) install -e '.[dev]'
 
 test:
-	pytest
+	$(PYTHON) -m pytest
 
 lint:
-	ruff check src tests
+	$(PYTHON) -m ruff check src tests
 
 typecheck:
-	mypy src
+	$(PYTHON) -m mypy src
 
 run-scenarios:
-	python -m langgraph_agent_lab.cli run-scenarios --config configs/lab.yaml --output outputs/metrics.json
+	$(PYTHON) -m langgraph_agent_lab.cli run-scenarios --config configs/lab.yaml --output outputs/metrics.json
 
 grade-local:
-	python -m langgraph_agent_lab.cli validate-metrics --metrics outputs/metrics.json
+	$(PYTHON) -m langgraph_agent_lab.cli validate-metrics --metrics outputs/metrics.json
 
 clean:
 	rm -rf .pytest_cache .ruff_cache .mypy_cache htmlcov dist build *.egg-info outputs/*.json

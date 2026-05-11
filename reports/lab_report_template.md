@@ -2,9 +2,8 @@
 
 ## 1. Team / student
 
-- Name:
-- Repo/commit:
-- Date:
+- Name: Trần Thái Huy
+- Date: 2026-05-11
 
 ## 2. Architecture
 

@@ -1,4 +1,10 @@
-from langgraph_agent_lab.routing import route_after_approval, route_after_classify, route_after_evaluate, route_after_retry
+from langgraph_agent_lab.nodes import classify_node
+from langgraph_agent_lab.routing import (
+    route_after_approval,
+    route_after_classify,
+    route_after_evaluate,
+    route_after_retry,
+)
 from langgraph_agent_lab.state import Route
 
 
@@ -21,3 +27,17 @@ def test_route_after_retry_bound():
 def test_route_after_evaluate():
     assert route_after_evaluate({"evaluation_result": "success"}) == "answer"
     assert route_after_evaluate({"evaluation_result": "needs_retry"}) == "retry"
+
+
+def test_classify_risky_priority_over_tool_words():
+    result = classify_node({"query": "Please cancel and check order status"})
+    assert result["route"] == Route.RISKY.value
+
+
+def test_classify_missing_info_uses_whole_words():
+    assert classify_node({"query": "Can you fix it?"})["route"] == Route.MISSING_INFO.value
+    assert classify_node({"query": "iteration status"})["route"] == Route.TOOL.value
+
+
+def test_classify_error_keywords():
+    assert classify_node({"query": "Service unavailable after crash"})["route"] == Route.ERROR.value
